@@ -1,3 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import '../styles/globals.css'
 import {UserProvider} from "@auth0/nextjs-auth0";
 
