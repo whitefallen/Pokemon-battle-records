@@ -82,6 +82,8 @@ export default function Home() {
 
     newDoc.player1.won = battle[0].won;
     newDoc.player2.won = battle[1].won;
+    // Set CreatedBy
+    newDoc.createdBy = user.sub;
     return newDoc;
   }
   const [battles, setBattles] = useState(battlesExample)
@@ -112,7 +114,7 @@ export default function Home() {
         }
       </main>
 
-      <footer >
+      <footer>
 
       </footer>
     </div>
