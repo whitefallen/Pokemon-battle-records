@@ -3,7 +3,8 @@ import {Col, Row} from "react-bootstrap";
 
 
 export default function Battle ({battles}) {
-  return battles.battles.map((battle, index) => {
+  if(battles === null) return null;
+  return battles.map((battle, index) => {
     return <div key={index} >
       <Row>
         <Col>

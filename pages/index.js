@@ -1,80 +1,42 @@
 import Head from 'next/head'
 import Battle from "./battles/battles";
 import AddBattle from "./action/addBattle";
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {useUser} from "@auth0/nextjs-auth0";
-
 
 export default function Home() {
   const { user, error, isLoading } = useUser();
-  const battlesExample = {
-    "battles":[
-      {
-        "player1":{
-          "player":"Thomas",
-          "pokemons":[
-            {"identifier":"Togepi"},
-            {"identifier":"Togepi"},
-            {"identifier":"Togepi"},
-            {"identifier":"Togepi"},
-            {"identifier":"Togepi"},
-            {"identifier":"Togepi"}
-          ],
-          "won": false
-        },
-        "player2":{
-          "player":"Daniel",
-          "pokemons":[
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"}
-          ],
-          "won": false
-        }
-      },
-      {
-        "player1":{
-          "player":"Larissa",
-          "pokemons":[
-            {"identifier":"Evoli"},
-            {"identifier":"Evoli"},
-            {"identifier":"Evoli"},
-            {"identifier":"Evoli"},
-            {"identifier":"Evoli"},
-            {"identifier":"Evoli"}
-          ],
-          "won": false
-        },
-        "player2":{
-          "player":"Thomas",
-          "pokemons":[
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"},
-            {"identifier":"Pikachu"}
-          ],
-          "won": false
-        }
-      }
-    ]
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch('/api/getBattles');
+      const data = await res.json();
+      setBattles(data);
+      return data;
+    }
+    fetchData().then(r => console.log("fetched"));
+
+  }, [])
+  async function saveBattleToDB(newDoc) {
+    const res = await fetch('/api/addBattles', {
+      method: 'POST',
+      body: JSON.stringify(newDoc)
+    })
   }
 
   function addBattle(battle) {
     let newBattleDoc = {player1: {}, player2:{}}
-    let battleCopy = {...battles};
-    battleCopy.battles.push(setValuesOfBattle(newBattleDoc, battle))
+    let battleCopy = [...battles];
+    let newDoc = setValuesOfBattle(newBattleDoc, battle);
+    saveBattleToDB(newDoc).then(r => console.log("Saved"));
+    battleCopy.push(newDoc);
     setBattles(battleCopy);
   }
 
   function setValuesOfBattle(newDoc, battle) {
 
     //newDoc.player1.player = battle[0].player;
-    newDoc.player1.player = user.name;
+    newDoc.player1.player = battle[0].player;
     newDoc.player2.player = battle[1].player;
 
     newDoc.player1.pokemons = battle[0].pokemons;
@@ -86,7 +48,7 @@ export default function Home() {
     newDoc.createdBy = user.sub;
     return newDoc;
   }
-  const [battles, setBattles] = useState(battlesExample)
+  const [battles, setBattles] = useState(null)
   return (
     <div>
       <Head>
