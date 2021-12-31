@@ -4,9 +4,12 @@ import {Typeahead} from "react-bootstrap-typeahead";
 import React from 'react';
 import {useState} from 'react';
 import {useUser} from "@auth0/nextjs-auth0";
+import { useRouter } from 'next/router'
 
-export default function AddBattle ({addBattle}) {
+
+export default function AddBattle () {
   const { user, error, isLoading } = useUser();
+  const router = useRouter();
   const [formData, setFormData] = useState([
     {
       'player': 'Player1',
@@ -52,6 +55,37 @@ export default function AddBattle ({addBattle}) {
       inputObj[ObjKey].player = `Player${ObjKey}`;
     }
     setFormData(inputObj);
+  }
+  async function saveBattleToDB(newDoc) {
+    await fetch('/api/addBattles', {
+      method: 'POST',
+      body: JSON.stringify(newDoc)
+    }).then(() => {
+        router.push('/');
+      }
+    )
+  }
+
+  function addBattle(battle) {
+    let newBattleDoc = {player1: {}, player2:{}}
+    let newDoc = setValuesOfBattle(newBattleDoc, battle);
+    saveBattleToDB(newDoc).then(r => console.log("Saved"));
+  }
+
+  function setValuesOfBattle(newDoc, battle) {
+
+    //newDoc.player1.player = battle[0].player;
+    newDoc.player1.player = battle[0].player;
+    newDoc.player2.player = battle[1].player;
+
+    newDoc.player1.pokemons = battle[0].pokemons;
+    newDoc.player2.pokemons = battle[1].pokemons;
+
+    newDoc.player1.won = battle[0].won;
+    newDoc.player2.won = battle[1].won;
+    // Set CreatedBy
+    newDoc.createdBy = user.sub;
+    return newDoc;
   }
   if (!user) return <div> No User Loaded</div>;
   return (

@@ -3,6 +3,7 @@ import Battle from "./battles/battles";
 import AddBattle from "./action/addBattle";
 import {useState, useEffect} from 'react';
 import {useUser} from "@auth0/nextjs-auth0";
+import {Nav, FormControl, InputGroup, Row} from "react-bootstrap";
 
 export default function Home() {
   const { user, error, isLoading } = useUser();
@@ -17,37 +18,7 @@ export default function Home() {
     fetchData().then(r => console.log("fetched"));
 
   }, [])
-  async function saveBattleToDB(newDoc) {
-    const res = await fetch('/api/addBattles', {
-      method: 'POST',
-      body: JSON.stringify(newDoc)
-    })
-  }
 
-  function addBattle(battle) {
-    let newBattleDoc = {player1: {}, player2:{}}
-    let battleCopy = [...battles];
-    let newDoc = setValuesOfBattle(newBattleDoc, battle);
-    saveBattleToDB(newDoc).then(r => console.log("Saved"));
-    battleCopy.push(newDoc);
-    setBattles(battleCopy);
-  }
-
-  function setValuesOfBattle(newDoc, battle) {
-
-    //newDoc.player1.player = battle[0].player;
-    newDoc.player1.player = battle[0].player;
-    newDoc.player2.player = battle[1].player;
-
-    newDoc.player1.pokemons = battle[0].pokemons;
-    newDoc.player2.pokemons = battle[1].pokemons;
-
-    newDoc.player1.won = battle[0].won;
-    newDoc.player2.won = battle[1].won;
-    // Set CreatedBy
-    newDoc.createdBy = user.sub;
-    return newDoc;
-  }
   const [battles, setBattles] = useState(null)
   return (
     <div>
@@ -66,8 +37,12 @@ export default function Home() {
       <main>
         {user && <>
           <Battle battles={battles}/>
-          <AddBattle addBattle={addBattle}/>
-          <a href="/api/auth/logout">Logout</a>
+          <Nav.Link href={"/action/addBattle"}>
+            New Battle
+          </Nav.Link>
+          <Nav.Link href="/api/auth/logout">
+            Logout
+          </Nav.Link>
           </>
         }
         {!user && <>
