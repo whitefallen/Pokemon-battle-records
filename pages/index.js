@@ -37,12 +37,16 @@ export default function Home() {
       <main>
         {user && <>
           <Battle battles={battles}/>
-          <Nav.Link href={"/action/addBattle"}>
-            New Battle
-          </Nav.Link>
-          <Nav.Link href="/api/auth/logout">
-            Logout
-          </Nav.Link>
+          <div>
+            <a href={"/action/addBattle"} width={"200px"}>
+              New Battle
+            </a>
+          </div>
+          <div>
+            <a href="/api/auth/logout" width={"200px"}>
+              Logout
+            </a>
+          </div>
           </>
         }
         {!user && <>

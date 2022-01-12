@@ -1,5 +1,7 @@
 import React from 'react';
 import {Col, Row} from "react-bootstrap";
+import Image from "next/image";
+import {GiCrossedSwords} from "react-icons/gi";
 
 
 export default function Battle ({battles}) {
@@ -17,6 +19,9 @@ export default function Battle ({battles}) {
             </Col>
           </Row>
         </Col>
+        <Col md={"1"}>
+
+        </Col>
         <Col>
           <Row>
             <Col>
@@ -31,12 +36,29 @@ export default function Battle ({battles}) {
       <Row>
         <Col>
           <Row>
-            {battle.player1.pokemons.map((e, index) => <Col key={index}>{e.identifier} </Col>)}
+            {battle.player1.pokemons.map((e, index) => <Col key={index}>
+              <Image
+                src={`/pk_sprites/sprites/pokemon/${e.id}.png`}
+                width={"200px"}
+                height={"200px"}
+                alt={`${e.id}.png`}
+              />
+            </Col>)}
           </Row>
+        </Col>
+        <Col md={"auto"}>
+          <GiCrossedSwords size={100}/>
         </Col>
         <Col>
           <Row>
-            {battle.player2.pokemons.map((e, index) => <Col key={index}>{e.identifier} </Col>)}
+            {battle.player2.pokemons.map((e, index) => <Col key={index}>
+              <Image
+                src={`/pk_sprites/sprites/pokemon/${e.id}.png`}
+                width={"200px"}
+                height={"200px"}
+                alt={`${e.id}.png`}
+              />
+            </Col>)}
           </Row>
         </Col>
       </Row>
